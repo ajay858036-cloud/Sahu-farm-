@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#16a34a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SAHU Farm">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%2316a34a' width='192' height='192'/><text x='96' y='130' font-size='140' font-weight='bold' text-anchor='middle' fill='white' font-family='Arial'>🌾</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%2316a34a' width='192' height='192'/><text x='96' y='130' font-size='140' font-weight='bold' text-anchor='middle' fill='white' font-family='Arial'>🌾</text></svg>">
+    <title>SAHU Farm - Farm Fresh Delivery</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', Arial, sans-serif;
+            background: #fff;
+            color: #0d4a23;
+            line-height: 1.5;
+        }
+
+        .app {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* App Header/Status Bar */
+        .status-bar {
+            background: linear-gradient(135deg, #0d4a23 0%, #16a34a 100%);
+            color: #fff;
+            padding: 12px 16px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Main Header with Logo */
+        .app-header {
+            background: linear-gradient(135deg, #0d4a23 0%, #14532d 50%, #16a34a 100%);
+            color: #fff;
+            padding: 16px 20px 20px;
+            box-shadow: 0 4px 12px rgba(13, 74, 35, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .app-logo {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+        }
+
+        .app-info h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .app-info p {
+            margin: 4px 0 0 0;
+            font-size: 12px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        /* Main content area */
+        main {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: 12px;
+            background: #f8fbf9;
+        }
+
+        section {
+            display: none;
+        }
+
+        section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        section h2 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0d4a23;
+            margin: 0 0 14px 0;
+            padding: 0 4px;
+        }
+
+        /* Grid layout */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* Cards */
+        .card {
+            background: #fff;
+            border: 1px solid #e0eae4;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 2px 6px rgba(13, 74, 35, 0.05);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .card:active {
+            transform: scale(0.97);
+            box-shadow: 0 4px 12px rgba(13, 74, 35, 0.12);
+        }
+
+        .card-emoji {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .card-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0d4a23;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-price {
+            color: #16a34a;
+            font-weight: 900;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .card-unit {
+            color: #9ca9a2;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .card-stock {
+            color: #9ca9a2;
+            font-size: 12px;
+            margin-bottom: 10px;
+            margin-top: auto;
+        }
+
+        /* Panel */
+        .panel {
+            background: #fff;
+            border: 1px solid #e0eae4;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 2px 6px rgba(13, 74, 35, 0.05);
+            margin-bottom: 12px;
+        }
+
+        .panel:last-child {
+            margin-bottom: 0;
+        }
+
+        .panel b {
+            color: #0d4a23;
+        }
+
+        /* Buttons */
+        .btn {
+            border: 0;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+            margin-top: 10px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #f0f5f2;
+            color: #16a34a;
+            border: 2px solid #16a34a;
+            box-shadow: none;
+        }
+
+        .btn-sm {
+            padding: 10px 12px;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        /* Forms */
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #d8e3da;
+            border-radius: 10px;
+            margin-top: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background: #fff;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #16a34a;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 800;
+            display: block;
+            margin-top: 12px;
+            color: #0d4a23;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Row layout */
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .row:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Quantity selector */
+        .qty {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: #f8fbf9;
+            padding: 6px 8px;
+            border-radius: 10px;
+            border: 1px solid #e0eae4;
+        }
+
+        .qty button {
+            width: 34px;
+            height: 34px;
+            border: 0;
+            border-radius: 8px;
+            background: #fff;
+            font-weight: 900;
+            cursor: pointer;
+            color: #16a34a;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .qty button:active {
+            background: #e8f5eb;
+            transform: scale(0.95);
+        }
+
+        .qty span {
+            min-width: 20px;
+            text-align: center;
+            font-weight: 600;
+            color: #0d4a23;
+        }
+
+        /* Tags */
+        .tag {
+            font-size: 11px;
+            background: linear-gradient(135deg, #e8f5eb, #dff8e0);
+            color: #16a34a;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        /* Progress bar */
+        .progress {
+            height: 6px;
+            background: #e5ece6;
+            border-radius: 8px;
+            margin: 12px 0;
+            overflow: hidden;
+        }
+
+        .progress i {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, #16a34a, #22c55e);
+            border-radius: 8px;
+            transition: width 0.4s ease;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            font-size: 8px;
+            color: #758078;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Order card */
+        .order-card {
+            border-left: 5px solid #16a34a;
+            padding-left: 12px;
+        }
+
+        /* Muted text */
+        .muted {
+            color: #9ca9a2;
+            font-size: 13px;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca9a2;
+        }
+
+        .empty-state-emoji {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-text {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* Bottom Navigation */
+        .nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            background: #fff;
+            border-top: 1px solid #e0eae4;
+            padding: 8px 0 12px;
+            gap: 4px;
+            flex-shrink: 0;
+            box-shadow: 0 -4px 12px rgba(13, 74, 35, 0.06);
+        }
+
+        .nav button {
+            border: 0;
+            background: none;
+            color: #9ca9a2;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            position: relative;
+            flex: 1;
+        }
+
+        .nav button:active {
+            transform: scale(0.9);
+        }
+
+        .nav button.active {
+            color: #16a34a;
+        }
+
+        .nav button span {
+            font-size: 20px;
+            font-weight: normal;
+            display: block;
+        }
+
+        .nav button .badge {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            background: #ff5252;
+            color: #fff;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0d4a23;
+            color: #fff;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 10;
+            box-shadow: 0 4px 16px rgba(13, 74, 35, 0.4);
+            animation: slideUp 0.3s ease;
+            max-width: 85%;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .hide {
+            display: none !important;
+        }
+
+        /* Summary */
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 14px;
+            border-bottom: 1px solid #f0f5f2;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            padding-top: 12px;
+            border-top: 2px solid #e0eae4;
+            font-weight: 700;
+            font-size: 16px;
+            color: #16a34a;
+        }
+
+        .summary-item b {
+            color: #16a34a;
+            font-weight: 700;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e0eae4;
+            margin: 12px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span id="time">09:41</span>
+            <span id="network">📶 4G</span>
+        </div>
+
+        <!-- App Header -->
+        <div class="app-header">
+            <div class="header-content">
+                <div class="app-logo">🌾</div>
+                <div class="app-info">
+                    <h1>SAHU Farm</h1>
+                    <p>Farm Fresh Delivery</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Shop Section -->
+            <section id="shop" class="active">
+                <h2>🏪 Available Products</h2>
+                <div id="products" class="grid"></div>
+            </section>
+
+            <!-- Cart Section -->
+            <section id="cart">
+                <h2>🛒 Your Cart</h2>
+                <div id="cartBox"></div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="orders">
+                <h2>📦 My Orders</h2>
+                <div id="ordersBox"></div>
+            </section>
+
+            <!-- Account Section -->
+            <section id="account">
+                <h2>👤 My Account</h2>
+                <div class="panel">
+                    <label>Your Name</label>
+                    <input id="name" type="text" placeholder="Enter your full name">
+                    <label>Mobile Number</label>
+                    <input id="mobile" type="tel" placeholder="Mobile number" maxlength="10">
+                    <button class="btn btn-primary" onclick="login()">Send OTP</button>
+                    <p class="muted" style="margin-top: 12px; text-align: center; font-size: 12px;">Demo OTP: 1234</p>
+                </div>
+                <div class="panel">
+                    <b style="display: block; margin-bottom: 8px;">ℹ️ About Us</b>
+                    <p class="muted">
+                        Owner: Ajay<br>
+                        📍 Mandar, Jharkhand<br>
+                        🚚 Delivery: Ranchi<br>
+                        📱 WhatsApp: 901xxxxxxxx
+                    </p>
+                </div>
+            </section>
+
+            <!-- Admin Section -->
+            <section id="admin">
+                <h2>⚙️ Admin</h2>
+                <div id="adminLogin" class="panel">
+                    <label>Admin PIN</label>
+                    <input id="pin" type="password" placeholder="Enter PIN">
+                    <button class="btn btn-primary" onclick="adminLogin()">Login</button>
+                    <p class="muted" style="margin-top: 12px; text-align: center; font-size: 12px;">Demo PIN: 2468</p>
+                </div>
+                <div id="adminBody" class="hide">
+                    <div class="grid">
+                        <div class="panel">
+                            <div class="muted">Orders</div>
+                            <b style="font-size: 28px; color: #16a34a;" id="ac">0</b>
+                        </div>
+                        <div class="panel">
+                            <div class="muted">Revenue</div>
+                            <b style="font-size: 24px; color: #16a34a;" id="as">₹0</b>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <label>Delivery Charge (₹)</label>
+                        <input id="fee" type="number" placeholder="Amount">
+                        <button class="btn btn-primary" onclick="saveFee()">Update</button>
+                    </div>
+                    <div class="panel">
+                        <b style="display: block; margin-bottom: 12px;">📦 Products</b>
+                        <div id="adminProducts"></div>
+                    </div>
+                    <div class="panel">
+                        <b style="display: block; margin-bottom: 12px;">📋 Orders</b>
+                        <div id="adminOrders"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="nav">
+            <button class="active" onclick="switchPage('shop',this)">
+                <span>🏠</span>
+                <div style="font-size: 9px;">Shop</div>
+            </button>
+            <button onclick="switchPage('cart',this)">
+                <span>🛒</span>
+                <div style="font-size: 9px;">Cart</div>
+                <div class="badge" id="cc">0</div>
+            </button>
+            <button onclick="switchPage('orders',this)">
+                <span>📦</span>
+                <div style="font-size: 9px;">Orders</div>
+            </button>
+            <button onclick="switchPage('account',this)">
+                <span>👤</span>
+                <div style="font-size: 9px;">Account</div>
+            </button>
+            <button onclick="switchPage('admin',this)">
+                <span>⚙️</span>
+                <div style="font-size: 9px;">Admin</div>
+            </button>
+        </nav>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast hide"></div>
+    </div>
+
+    <script>
+        // Default products
+        const DEFAULT_PRODUCTS = [
+            ['fish', '🐟', 'Desi Fish', 250, 'kg', 100],
+            ['chicken', '🐔', 'Desi Chicken', 130, 'kg', 50],
+            ['goat', '🐐', 'Desi Goat', 750, 'kg', 25],
+            ['duck', '🦆', 'Duck', 300, 'kg', 20],
+            ['egg', '🥚', 'Fresh Eggs', 10, 'piece', 200]
+        ];
+
+        // App State
+        let PRODUCTS = JSON.parse(localStorage.P || 'null') || DEFAULT_PRODUCTS.map(x => ({
+            id: x[0],
+            emoji: x[1],
+            name: x[2],
+            price: x[3],
+            unit: x[4],
+            stock: x[5]
+        }));
+
+        let CART = JSON.parse(localStorage.C || '{}');
+        let ORDERS = JSON.parse(localStorage.O || '[]');
+        let DELIVERY_FEE = +(localStorage.F || 50);
+        let ADMIN = false;
+
+        // Utility: Save to localStorage
+        const save = () => {
+            localStorage.P = JSON.stringify(PRODUCTS);
+            localStorage.C = JSON.stringify(CART);
+            localStorage.O = JSON.stringify(ORDERS);
+            localStorage.F = DELIVERY_FEE;
+        };
+
+        // Utility: Format money
+        const money = (n) => '₹' + (+n).toLocaleString('en-IN');
+
+        // Utility: Show toast notification
+        const toast = (msg) => {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.classList.remove('hide');
+            setTimeout(() => el.classList.add('hide'), 2000);
+        };
+
+        // Switch between pages
+        const switchPage = (pageId, btn) => {
+            document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            
+            renderAll();
+        };
+
+        // Render all sections
+        const renderAll = () => {
+            renderProducts();
+            renderCart();
+            renderOrders();
+            updateCartBadge();
+            if (ADMIN) renderAdmin();
+        };
+
+        // Update cart badge
+        const updateCartBadge = () => {
+            const count = Object.values(CART).reduce((a, b) => a + b, 0);
+            document.getElementById('cc').textContent = count;
+            document.getElementById('cc').classList.toggle('hide', count === 0);
+        };
+
+        // Render shop products
+        const renderProducts = () => {
+            const html = PRODUCTS.map(p =>
+                `<div class="card">
+                    <div class="card-emoji">${p.emoji}</div>
+                    <div class="card-name">${p.name}</div>
+                    <div class="card-price">${money(p.price)}</div>
+                    <div class="card-unit">per ${p.unit}</div>
+                    <div class="card-stock">Stock: ${p.stock} ${p.unit}</div>
+                    <button class="btn btn-primary btn-sm" 
+                            onclick="addToCart('${p.id}')"
+                            ${p.stock <= 0 ? 'disabled' : ''}>
+                        ${p.stock <= 0 ? 'Out of Stock' : 'Add'}
+                    </button>
+                </div>`
+            ).join('');
+            
+            document.getElementById('products').innerHTML = html || '<div class="empty-state">No products available</div>';
+        };
+
+        // Add item to cart
+        const addToCart = (id) => {
+            CART[id] = (CART[id] || 0) + 1;
+            save();
+            renderAll();
+            toast('✅ Added to cart');
+        };
+
+        // Update cart quantity
+        const updateCartItem = (id, delta) => {
+            CART[id] = (CART[id] || 0) + delta;
+            if (CART[id] <= 0) delete CART[id];
+            save();
+            renderAll();
+        };
+
+        // Render cart
+        const renderCart = () => {
+            const keys = Object.keys(CART);
+            const el = document.getElementById('cartBox');
+
+            if (!keys.length) {
+                el.innerHTML = `<div class="empty-state">
+                    <div class="empty-state-emoji">🛒</div>
+                    <div class="empty-state-text">Cart is empty</div>
+                    <p class="muted" style="font-size: 12px; margin-top: 8px;">Add items from shop</p>
+                </div>`;
+                return;
+            }
+
+            let subtotal = 0;
+            const items = keys.map(id => {
+                const p = PRODUCTS.find(x => x.id === id);
+                const qty = CART[id];
+                const total = p.price * qty;
+                subtotal += total;
+
+                return `<div class="panel">
+                    <div class="row">
+                        <b>${p.emoji} ${p.name}</b>
+                        <div class="qty">
+                            <button onclick="updateCartItem('${id}', -1)">−</button>
+                            <span>${qty}</span>
+                            <button onclick="updateCartItem('${id}', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 8px; justify-content: flex-end;">
+                        <span class="muted">${money(p.price)} × ${qty}</span>
+                        <b style="color: #16a34a; font-size: 15px;">${money(total)}</b>
+                    </div>
+                </div>`;
+            }).join('');
+
+            const total = subtotal + DELIVERY_FEE;
+
+            el.innerHTML = items + `
+                <div class="panel">
+                    <div class="summary-item">
+                        <span>Subtotal</span>
+                        <b>${money(subtotal)}</b>
+                    </div>
+                    <div class="summary-item">
+                        <span>Delivery Charge</span>
+                        <b>${money(DELIVERY_FEE)}</b>
+                    </div>
+                    <div class="summary-item">
+                        <span>Total</span>
+                        <b>${money(total)}</b>
+                    </div>
+                    <label>Delivery Address</label>
+                    <input id="addr" type="text" placeholder="Your address in Ranchi">
+                    <label>Payment Method</label>
+                    <select id="pay">
+                        <option>💵 Cash on Delivery</option>
+                        <option>📱 UPI</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="placeOrder()">Place Order</button>
+                </div>
+            `;
+        };
+
+        // Place order
+        const placeOrder = () => {
+            const addr = document.getElementById('addr').value.trim();
+            if (!addr) {
+                toast('⚠️ Enter delivery address');
+                return;
+            }
+
+            const items = Object.entries(CART).map(([id, qty]) => {
+                const p = PRODUCTS.find(x => x.id === id);
+                return { name: p.name, qty, price: p.price, total: p.price * qty };
+            });
+
+            const subtotal = items.reduce((a, x) => a + x.total, 0);
+            const orderId = 'SF' + Math.random().toString().slice(2, 8);
+
+            ORDERS.unshift({
+                id: orderId,
+                items,
+                address: addr,
+                payment: document.getElementById('pay').value,
+                subtotal,
+                delivery: DELIVERY_FEE,
+                total: subtotal + DELIVERY_FEE,
+                status: 0,
+                date: new Date().toLocaleString('en-IN')
+            });
+
+            CART = {};
+            save();
+            toast(`✅ Order ${orderId} placed!`);
+            switchPage('orders', document.querySelectorAll('.nav button')[2]);
+        };
+
+        // Render orders
+        const renderOrders = () => {
+            const statuses = ['Placed', 'Confirmed', 'Preparing', 'Out for Delivery', 'Delivered'];
+            const el = document.getElementById('ordersBox');
+
+            if (!ORDERS.length) {
+                el.innerHTML = `<div class="empty-state">
+                    <div class="empty-state-emoji">📦</div>
+                    <div class="empty-state-text">No orders yet</div>
+                </div>`;
+                return;
+            }
+
+            el.innerHTML = ORDERS.map(o => `
+                <div class="panel order-card">
+                    <div class="row">
+                        <b>${o.id}</b>
+                        <span class="tag">${statuses[o.status]}</span>
+                    </div>
+                    <div class="muted" style="font-size: 12px; margin-bottom: 8px;">${o.date}</div>
+                    <p style="margin: 8px 0; font-size: 13px;">
+                        ${o.items.map(i => `${i.name} × ${i.qty}`).join(', ')}
+                    </p>
+                    <div style="padding-top: 10px; border-top: 1px solid #e0eae4; margin-top: 10px;">
+                        <b style="color: #16a34a; font-size: 16px;">${money(o.total)}</b>
+                    </div>
+                    <div class="progress">
+                        <i style="width: ${25 + o.status * 25}%"></i>
+                    </div>
+                    <div class="steps">
+                        ${statuses.map(s => `<span>${s}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        // Login
+        const login = () => {
+            const name = document.getElementById('name').value.trim();
+            const mobile = document.getElementById('mobile').value.trim();
+
+            if (!name || mobile.length < 10) {
+                toast('⚠️ Enter valid details');
+                return;
+            }
+
+            localStorage.user = name;
+            toast('✅ OTP sent to ' + mobile);
+        };
+
+        // Admin login
+        const adminLogin = () => {
+            if (document.getElementById('pin').value !== '2468') {
+                toast('❌ Wrong PIN');
+                return;
+            }
+            ADMIN = true;
+            document.getElementById('adminLogin').classList.add('hide');
+            document.getElementById('adminBody').classList.remove('hide');
+            renderAdmin();
+            toast('✅ Admin logged in');
+        };
+
+        // Save delivery fee
+        const saveFee = () => {
+            DELIVERY_FEE = Math.max(0, +document.getElementById('fee').value || 0);
+            save();
+            toast('✅ Updated');
+            renderAll();
+        };
+
+        // Render admin panel
+        const renderAdmin = () => {
+            document.getElementById('fee').value = DELIVERY_FEE;
+            document.getElementById('ac').textContent = ORDERS.length;
+            document.getElementById('as').textContent = money(ORDERS.reduce((a, x) => a + x.total, 0));
+
+            document.getElementById('adminProducts').innerHTML = PRODUCTS.map(p =>
+                `<div style="padding: 12px 0; border-bottom: 1px solid #e0eae4;">
+                    <b style="display: block; margin-bottom: 10px;">${p.emoji} ${p.name}</b>
+                    <label>Price/₹</label>
+                    <input type="number" id="pr${p.id}" value="${p.price}">
+                    <label>Stock</label>
+                    <input type="number" id="st${p.id}" value="${p.stock}">
+                    <button class="btn btn-primary btn-sm" onclick="updateProduct('${p.id}')">Save</button>
+                </div>`
+            ).join('');
+
+            const statuses = ['Placed', 'Confirmed', 'Preparing', 'Out for Delivery', 'Delivered'];
+            document.getElementById('adminOrders').innerHTML = ORDERS.length ? ORDERS.map(o =>
+                `<div class="panel">
+                    <b style="display: block; margin-bottom: 8px;">${o.id}</b>
+                    <div class="muted" style="margin-bottom: 8px;">📍 ${o.address}</div>
+                    <select onchange="updateOrderStatus('${o.id}', this.value)">
+                        ${statuses.map((s, i) => `<option value="${i}" ${i == o.status ? 'selected' : ''}>${s}</option>`).join('')}
+                    </select>
+                </div>`
+            ).join('') : '<div class="muted" style="text-align: center; padding: 20px;">No orders</div>';
+        };
+
+        // Update product
+        const updateProduct = (id) => {
+            const p = PRODUCTS.find(x => x.id === id);
+            p.price = Math.max(0, +document.getElementById('pr' + id).value || 0);
+            p.stock = Math.max(0, +document.getElementById('st' + id).value || 0);
+            save();
+            renderAll();
+            toast('✅ Saved');
+        };
+
+        // Update order status
+        const updateOrderStatus = (id, status) => {
+            const o = ORDERS.find(x => x.id === id);
+            o.status = +status;
+            save();
+            renderAll();
+            toast('✅ Updated');
+        };
+
+        // Update time display
+        setInterval(() => {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-IN', {hour: '2-digit', minute: '2-digit'});
+            document.getElementById('time').textContent = time;
+        }, 1000);
+
+        // Initialize
+        renderAll();
+
+        // Register Service Worker for offline support and installation
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then((reg) => {
+                console.log('✅ Service Worker registered:', reg);
+            }).catch((err) => {
+                console.log('❌ Service Worker registration failed:', err);
+            });
+
+            // Check for updates
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log('🔄 Service Worker updated');
+            });
+        }
+
+        // Install prompt handling
+        let installPrompt = null;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            installPrompt = e;
+            
+            // Show install button if not already installed
+            const installBtn = document.getElementById('installBtn');
+            if (installBtn) {
+                installBtn.style.display = 'block';
+            }
+        });
+
+        // Listen for app installed event
+        window.addEventListener('appinstalled', () => {
+            console.log('✅ App successfully installed!');
+            installPrompt = null;
+            const installBtn = document.getElementById('installBtn');
+            if (installBtn) {
+                installBtn.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
